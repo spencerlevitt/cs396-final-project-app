@@ -10,6 +10,7 @@ import {
 import NavBar from "../../components/NavBar";
 import fonts from "../../res/fonts";
 import { GiftedChat } from "react-web-gifted-chat";
+import socket from "../../Socket.js"
 
 const ChatRoomScreen = ({ route }) => {
   const { room } = route.params;
@@ -17,12 +18,17 @@ const ChatRoomScreen = ({ route }) => {
 
   const onSend = (messageText) => {
     console.log(messageText);
-    setMessages([messageText[0], ...messages]);
+    socket.emit("sendToRoom", room, "msg", messageText);
   };
+
+  socket.on("msg", (data) => {
+    console.log(data.body[0]);
+    setMessages([data.body[0], ...messages])
+  });
 
   return (
     <ScrollView style={{ backgroundColor: "white", flex: 1 }}>
-      <NavBar />
+      <NavBar selected={room} />
       <View style={styles.container}>
         <Text style={styles.roomCode}>{room}</Text>
         <View
@@ -37,7 +43,7 @@ const ChatRoomScreen = ({ route }) => {
             messages={messages}
             onSend={(newMessage) => onSend(newMessage)}
             user={{
-              id: 1,
+              id: socket.id,
             }}
           />
         </View>

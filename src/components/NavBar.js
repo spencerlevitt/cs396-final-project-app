@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useMediaQuery } from "react-responsive";
 import fonts from "../res/fonts";
 import * as RootNavigation from "../RootNavigation";
+import socket from "../Socket.js"
 
 const TopBar = ({ selected }) => {
   let isMobile = useMediaQuery({ maxWidth: 600 });
@@ -12,7 +13,10 @@ const TopBar = ({ selected }) => {
     <View style={styles.container}>
       <Text style={styles.logoName}>NFL Chat</Text>
       <View>
-        <TouchableOpacity onPress={() => RootNavigation.navigate("Home")}>
+        <TouchableOpacity onPress={() => {
+          RootNavigation.navigate("Home");
+          socket.emit("roomDisconnection", selected);
+        }}>
           <Text style={styles.pageName}>Home</Text>
         </TouchableOpacity>
       </View>
