@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import NavBar from "../../components/NavBar";
 import fonts from "../../res/fonts";
-import { GiftedChat } from "react-web-gifted-chat";
+import { GiftedChat, InputToolbar } from "react-web-gifted-chat";
 import socket from "../../Socket.js"
 
 const ChatRoomScreen = ({ route }) => {
@@ -18,11 +18,27 @@ const ChatRoomScreen = ({ route }) => {
 
   const onSend = (messageText) => {
     console.log(messageText);
-    socket.emit("sendToRoom", room, "msg", messageText);
+    fetch("http://localhost:3000/message", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: messageText,
+        roomId: room
+      })
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
-
-  socket.on("msg", (data) => {
-    console.log(data.body[0]);
+  socket.removeAllListeners("messageReceived");
+  socket.on("messageReceived", (data) => {
+    console.log(data);
     setMessages([data.body[0], ...messages])
   });
 
@@ -37,6 +53,7 @@ const ChatRoomScreen = ({ route }) => {
             backgroundColor: "#E8E8E8",
             height: 500,
             marginTop: 20,
+            border: "1px black solid"
           }}
         >
           <GiftedChat
@@ -45,10 +62,22 @@ const ChatRoomScreen = ({ route }) => {
             user={{
               id: socket.id,
             }}
+            renderInputToolbar={props => customInputToolbar(props)}
           />
         </View>
       </View>
     </ScrollView>
+  );
+};
+
+const customInputToolbar = props => {
+  return (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        borderTop: "1px solid black"
+      }}
+    />
   );
 };
 
