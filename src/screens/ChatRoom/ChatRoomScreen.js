@@ -10,7 +10,7 @@ import {
 import NavBar from "../../components/NavBar";
 import fonts from "../../res/fonts";
 import { GiftedChat, InputToolbar } from "react-web-gifted-chat";
-import socket from "../../Socket.js"
+import socket from "../../Socket.js";
 
 const ChatRoomScreen = ({ route }) => {
   const { room } = route.params;
@@ -18,28 +18,28 @@ const ChatRoomScreen = ({ route }) => {
 
   const onSend = (messageText) => {
     console.log(messageText);
-    fetch("http://localhost:3000/message", {
-      method: 'POST',
+    fetch("http://cs396-final-project.herokuapp.com/message", {
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         message: messageText,
-        roomId: room
-      })
+        roomId: room,
+      }),
     })
       .then((res) => {
         console.log(res);
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   };
   socket.removeAllListeners("messageReceived");
   socket.on("messageReceived", (data) => {
     console.log(data);
-    setMessages([data.body[0], ...messages])
+    setMessages([data.body[0], ...messages]);
   });
 
   return (
@@ -53,7 +53,7 @@ const ChatRoomScreen = ({ route }) => {
             backgroundColor: "#E8E8E8",
             height: 500,
             marginTop: 20,
-            border: "1px black solid"
+            border: "1px black solid",
           }}
         >
           <GiftedChat
@@ -62,7 +62,7 @@ const ChatRoomScreen = ({ route }) => {
             user={{
               id: socket.id,
             }}
-            renderInputToolbar={props => customInputToolbar(props)}
+            renderInputToolbar={(props) => customInputToolbar(props)}
           />
         </View>
       </View>
@@ -70,12 +70,12 @@ const ChatRoomScreen = ({ route }) => {
   );
 };
 
-const customInputToolbar = props => {
+const customInputToolbar = (props) => {
   return (
     <InputToolbar
       {...props}
       containerStyle={{
-        borderTop: "1px solid black"
+        borderTop: "1px solid black",
       }}
     />
   );
