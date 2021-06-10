@@ -18,7 +18,7 @@ const ChatRoomScreen = ({ route }) => {
 
   const onSend = (messageText) => {
     console.log(messageText);
-    fetch("http://cs396-final-project.herokuapp.com/message", {
+    fetch("https://cs396-final-project.herokuapp.com/message", {
       method: "POST",
       headers: {
         Accept: "application/json",
